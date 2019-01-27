@@ -4,7 +4,6 @@ from requests.exceptions import RequestException
 from get import get_data as get
 
 session = requests.Session()
-saved = ""
 
 def login(username, pswd):
     try:
@@ -19,10 +18,6 @@ def login(username, pswd):
     except RequestException as e:
         log_error("Error {}".format(str(e)))
 
-def save_login(username, pswd):
-    saved = login(username, pswd)
-    return saved
-
 def is_good_response(r):
     content_type = r.headers['Content-Type'].lower()
     return (r.status_code == 200
@@ -33,11 +28,7 @@ def log_error(e):
     print(e)
 
 def get_bio(username, pswd):
-    if saved.strip() != "":
-        return get.biodata(BeautifulSoup(saved, 'html.parser'))
-    else:
-        log_error("Not logged in! Trying to login as {}".format(username))
-        return get.biodata(BeautifulSoup(login(username, pswd), 'html.parser'))
+    return get.biodata(BeautifulSoup(login(username, pswd), 'html.parser'))
 
 def get_jadwal(username, pswd):
     try:
