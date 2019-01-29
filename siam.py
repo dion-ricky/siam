@@ -17,7 +17,7 @@ def login(username=None, pswd = None, raw=True):
             if is_good_response(r):
                 if success_login(r):
                     if raw:
-                        passreturn (r.text)
+                        return (r.text)
                     else:
                         return 0
                 else:
@@ -41,24 +41,24 @@ def is_good_response(r):
 def log_error(e):
     print(e)
 
-def get_bio(username=None):
-    return get.biodata(BeautifulSoup(login(username), 'html.parser'))
+def get_bio(username=None, pswd=None):
+    return get.biodata(BeautifulSoup(login(username, pswd), 'html.parser'))
 
-def get_jadwal(username=None):
+def get_jadwal(username=None, pswd=None):
     try:
         with session.get(siam_home+"class.php") as r:
-            if is_good_response(r):
+            if is_good_response(r) and success_login(r):
                 return get.jadwal(BeautifulSoup(r.text, 'html.parser'))
             else:
                 log_error("Not logged in or session expired!")
     except RequestException as e:
         log_error("Error {} as {}".format(str(e), username))
 
-def get_all_data(username=None, split=True):
+def get_all_data(username=None, pswd=None, split=True):
     if split:
-        return get_bio(username), get_jadwal(username)
+        return get_bio(username, pswd), get_jadwal(username, pswd)
     else:
         retr = [[]]
-        retr.append(get_bio(username))
-        retr.append(get_jadwal(username))
+        retr.append(get_bio(username, pswd))
+        retr.append(get_jadwal(username, pswd))
         return retr
